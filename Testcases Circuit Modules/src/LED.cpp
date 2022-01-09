@@ -18,7 +18,7 @@ LED::LED(char pinnumber)
 //Functions 
 void LED::init(){
     pinMode(_ledpin, OUTPUT); //setting the pin as an output
-    digitalWrite(_ledpin, LOW); //switching the LED off as the default state
+    digitalWrite(_ledpin, HIGH); //switching the LED off as the default state
 }
 
 //commands to the led

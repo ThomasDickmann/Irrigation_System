@@ -12,7 +12,24 @@
 
 #include "Arduino.h"
 
-unsigned char ledpin = A6; 
+//Definition of constants for the system 
+int wakeup_interval = 5; //defines the wakeup interval in minutes TODO: Check, if int necessary
+
+//RTC Pins 
+const unsigned char interruptPin = 2; //SQW pin connected to interrupt0 on pin D2 on Nano 
+//A4 SDA
+//A5 SCL 
+//RST not connected
+//BAT not connected 
+
+//SD card pins 
+const unsigned char CS = 10; //chip select pin 
+//D11 MOSI 
+//D12 MISO 
+//D13 CLK
+
+//Pinout for the PCB/Prototype circuit: 
+unsigned char ledpin = A0;
 
 //Pinout for the circuit: 
 //MOSFET driver pins low side switches
@@ -28,26 +45,19 @@ unsigned char mot_2 = 4;
 unsigned char hss_sig = 9; 
 
 //input pins soil sensors
+/* PINTOUT PCB V3.0:
 unsigned char sen_1 = A0;
 unsigned char sen_2 = A1; 
 unsigned char sen_3 = A2; 
 unsigned char sen_4 = A3; 
+/*/
+unsigned char sen_1 = A2;
+unsigned char sen_2 = A3; 
+unsigned char sen_3 = A6; 
+unsigned char sen_4 = A7; 
 
 //input pin battery voltage
-unsigned char v_bat = A7; 
-
-//SD card pins 
-unsigned char CS = 10; //chip select pin 
-//D11 MOSI 
-//D12 MISO 
-//D13 CLK
-
-//RTC Pins 
-unsigned char SQW = 2; //interrupt0 on pin D2 on Nano 
-//A4 SDA
-//A5 SCL 
-//RST not connected
-//BAT not connected 
+unsigned char v_bat = A1; 
 
 
 /*********************************************

@@ -12,37 +12,40 @@
 
 #include "Arduino.h"
 
-//Definition of constants for the system 
-int wakeup_interval = 5; //defines the wakeup interval in minutes TODO: Check, if int necessary
+/*********************************************
+* Declaration of constants for the system  
+**********************************************/
 
 //RTC Pins 
-const unsigned char interruptPin = 2; //SQW pin connected to interrupt0 on pin D2 on Nano 
+extern const unsigned char interruptPin; //SQW pin connected to interrupt0 on pin D2 on Nano 
 //A4 SDA
 //A5 SCL 
 //RST not connected
 //BAT not connected 
 
 //SD card pins 
-const unsigned char CS = 10; //chip select pin 
+extern const unsigned char CS; //chip select pin 
 //D11 MOSI 
 //D12 MISO 
 //D13 CLK
 
+//Declaration of constants for the system 
+
 //Pinout for the PCB/Prototype circuit: 
-unsigned char ledpin = A0;
+extern unsigned char ledpin;
 
 //Pinout for the circuit: 
 //MOSFET driver pins low side switches
-unsigned char valve_1 = 8; 
-unsigned char valve_2 = 7; 
-unsigned char valve_3 = 6; 
-unsigned char valve_4 = 5;
+extern unsigned char valve_1; 
+extern unsigned char valve_2; 
+extern unsigned char valve_3; 
+extern unsigned char valve_4;
  
-unsigned char mot_1 = 3;  
-unsigned char mot_2 = 4; 
+extern unsigned char mot_1 ;  
+extern unsigned char mot_2; 
 
 //MOSFET driver pin high side switch 
-unsigned char hss_sig = 9; 
+extern unsigned char hss_sig; 
 
 //input pins soil sensors
 /* PINTOUT PCB V3.0:
@@ -51,19 +54,49 @@ unsigned char sen_2 = A1;
 unsigned char sen_3 = A2; 
 unsigned char sen_4 = A3; 
 /*/
-unsigned char sen_1 = A2;
-unsigned char sen_2 = A3; 
-unsigned char sen_3 = A6; 
-unsigned char sen_4 = A7; 
+//Prototype and PCB V3.1
+extern unsigned char sen_1;
+extern unsigned char sen_2; 
+extern unsigned char sen_3; 
+extern unsigned char sen_4; 
 
 //input pin battery voltage
-unsigned char v_bat = A1; 
+extern unsigned char v_bat; 
 
+//IDE internal libraries needed for the RTC and interrupt functionality 
+#include <time.h>
+#include <SPI.h>
+#include <avr/sleep.h>
+
+//SD and RTC libraries
+#include <SD.h>
+#include <DS3232RTC.h>
+
+//Time variable for RTC
+extern time_t t; 
 
 /*********************************************
- *      function prototypes for system setup
+ *   Function prototypes for system setup and use 
  * ********************************************/
 
-//TODO
+void wakeUp();
+
+void RTC_init();
+
+void RTC_set_alarm();
+
+void RTC_sleep_prepare();
+
+time_t get_timestamp();
+
+void RTC_setup(); 
+
+//TODO: SD functionality
+
+void SD_setup(); 
+
+void SD_writeData(char data); //TODO: struct, char, array char[10]? Write function body 
+
+//TODO: remaining service cycle functions 
 
 #endif //SETUP_H

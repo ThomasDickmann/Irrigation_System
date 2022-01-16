@@ -55,6 +55,13 @@ unsigned char v_bat = A1;
 //Variables of the system 
 time_t t; //Time variable to be used in RTC functions 
 
+//Variables for controlling water dispensing 
+unsigned char amount_ml; //for setting the desired volume of water
+unsigned char duration_s; //controlling the on time of the motor lSS-functions
+unsigned char ml_per_sec = 5; //constant describing the pump behavior //TODO correct value, const unsigned char creates error? 
+
+//Variables for sensor data handling
+unsigned int soil_threshold;
 
 /*********************************************
 * Function bodies for the system setup 
@@ -116,7 +123,7 @@ void RTC_sleep_prepare()
     return t; 
   }
 
-void RTC_setup() //single function to set up the RTC in the setup loop of main.cpp
+void RTC_setup() //single function to set up the RTC in the setup fct of main.cpp
   {
     pinMode(interruptPin, INPUT_PULLUP);  
     RTC_init();
@@ -126,13 +133,22 @@ void RTC_setup() //single function to set up the RTC in the setup loop of main.c
 
 //SD data logging functionality
 
-void SD_setup()
+void SD_setup(unsigned char ledpin)
   {
   Serial.print("Initializing SD card...");
     if (!SD.begin(CS)) {
         Serial.println("initialization failed!");
     }
-    else {Serial.println("initialization done.");
+    else 
+      {
+        Serial.println("initialization done.");
+        while(true) //endless while loop with blinking indicator led showing the error 
+          {
+            digitalWrite(ledpin, HIGH);
+            delay(200);
+            digitalWrite(ledpin,LOW);
+            delay(200);
+          }
       }
   }
 
@@ -140,3 +156,13 @@ void SD_writeData(char data)
   {
     //TODO: Write combined data array of soil moisture and watering activity per plant to SD card 
   }
+
+
+
+  //Service cycle functions 
+
+  int duration_for_ml(char amount_ml)
+    {
+      duration_s = amount_ml * ml_per_sec;
+      return duration_s; 
+    }

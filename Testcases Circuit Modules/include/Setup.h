@@ -75,9 +75,19 @@ extern unsigned char v_bat;
 //Time variable for RTC
 extern time_t t; 
 
+//Variables for controlling water dispensing 
+extern unsigned char amount_ml; //for setting the desired volume of water
+extern unsigned char duration_s; //controlling the on time of the motor lSS-functions
+extern unsigned char ml_per_sec; //constant describing the pump behavior //TODO const unsigned char creates error? 
+
+//Variables for sensor data handling 
+extern unsigned int soil_threshold; //defines the minimum soil moisture threshold (perhaps define multipe thresholds for individual plants)
+
 /*********************************************
  *   Function prototypes for system setup and use 
  * ********************************************/
+
+//RTC system control
 
 void wakeUp();
 
@@ -91,12 +101,17 @@ time_t get_timestamp();
 
 void RTC_setup(); 
 
-//TODO: SD functionality
+//SD functionality
 
-void SD_setup(); 
+void SD_setup(unsigned char ledpin); 
 
 void SD_writeData(char data); //TODO: struct, char, array char[10]? Write function body 
 
-//TODO: remaining service cycle functions 
+//Service cycle functions
+
+int duration_for_ml(char amount_ml);
+
+
+
 
 #endif //SETUP_H

@@ -47,14 +47,7 @@ extern unsigned char mot_2;
 //MOSFET driver pin high side switch 
 extern unsigned char hss_sig; 
 
-//input pins soil sensors
-/* PINTOUT PCB V3.0:
-unsigned char sen_1 = A0;
-unsigned char sen_2 = A1; 
-unsigned char sen_3 = A2; 
-unsigned char sen_4 = A3; 
-/*/
-//Prototype and PCB V3.1
+//Input soil sensors
 extern unsigned char sen_1;
 extern unsigned char sen_2; 
 extern unsigned char sen_3; 

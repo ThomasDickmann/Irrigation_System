@@ -16,6 +16,7 @@
  * TODO: Add array of water amounts per plant
  * TODO: warning comparison of signed and unsigned int with sizeof function in for loop 
  * TODO: correct value of ml_per_sec constant in setup.cpp
+ * TODO: Include BMP280 functionality 
  * TODO: Set correct RTC time 
  * TODO: Move SD functionality to setup.cpp 
  * TODO: Use list of objects to cycle over for initialization? Less repeatative code
@@ -121,6 +122,7 @@ void loop()
 {
   //Preparing the arduino for power saving sleep state ... TODO: Move sleep_cpu to RTC_sleep_prepare fct?
   RTC_sleep_prepare();
+  delay(150);
   sleep_cpu();                                                          //activating sleep mode
 
   //Code to be executed after arduino has been woken up:
@@ -150,17 +152,6 @@ void loop()
   Serial.println(Sensor3.read()); 
   Serial.println(Sensor4.read()); 
 
-  //TODO: Acting upon the sensor signals: TODO, until then: 
-    Valve1.on(); 
-    Valve2.on(); 
-    Valve3.on();
-    Valve4.on();
-    delay(100); 
-    Valve1.off();
-    Valve2.off();
-    Valve3.off(); 
-    Valve4.off();   
-
   //Saving cycle data to SD card 
   //TODO: Move to setup.cpp and pass desired string to write as argument 
 
@@ -177,7 +168,7 @@ void loop()
   else {
     Serial.println("error opening data.txt");
   }
-
+/*
   //TODO: Remove for actual use, included just for testing purposes 
   // Reading the file
   myData = SD.open("data.txt");
@@ -192,6 +183,7 @@ void loop()
   else {
     Serial.println("error opening data.txt");
   }
+*/
 
 //Code for service routine
 
@@ -203,27 +195,27 @@ int val4 = Sensor4.read();
 
  //Fill secondary reservoir with water
  Motor1.on(); 
- delay(duration_for_ml(15)); //giving 15ml of water 
+ delay(2000); //TODO pass fuction to give 15ml of water 
  Motor1.off();
  
  //Loop over sensors and compare values to threshold (needs to be defined in setup.cpp) 
-for (int i=0; i < sizeof MySensors; i++) 
+for (int i=1; i <=4; i++) 
 //warning regarding comparison of unsigned int and int? What needs to be changed? 
 //sizeof MySensors equal to sizeof MyValves - not very clean, how to improve the adressing?
   {
-    Serial.println("Soil moisture level plant "  + String(i) + " = ");
+    Serial.println("Soil moisture level plant "  + String(i) + " = "); //TODO: add value to string
     if(MySensors[i].read()  <  soil_threshold)
     {
       Serial.println("Watering need detected. Watering plant " + String(i));
-      MyValves[i].on(); //open valve i
+      MyValves[i-1].on(); //open valve i
       Motor2.on(); //switch on pump secondary reservoir
-      delay(duration_for_ml(5)); //give 5ml of water, optimize with plant specific value through var. list of amount constants 
+      delay(1000); //TODO pass function to give 5ml of water, optimize with plant specific value through var. list of amount constants 
       Motor2.off(); //turn off pump secondary reservoir 
-      MyValves[i].off(); //close valve i
+      MyValves[i-1].off(); //close valve i
     }
     else 
     { 
-      Serial.println("No watering detected for plant "  + String(i)) + ", moving on to next sensor";
+      Serial.println("No watering need detected for plant "  + String(i)) + ", moving on to next sensor";
       Serial.println(""); //extra line break 
     }
   }
@@ -268,5 +260,6 @@ for (int i=0; i < sizeof MySensors; i++)
 
   //Preparing for the next sleep phase, set new alarm with defined time offset 
   RTC_set_alarm();
+  delay(150);
 
 } 

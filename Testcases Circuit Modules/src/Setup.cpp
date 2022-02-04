@@ -37,18 +37,18 @@ unsigned char mot_2 = 4;
 unsigned char hss_sig = 9; 
 
 //input pins soil sensors
-/* PINTOUT PCB V3.0:
+// PINTOUT PCB V3.0:
 unsigned char sen_1 = A0;
 unsigned char sen_2 = A1; 
 unsigned char sen_3 = A2; 
 unsigned char sen_4 = A3; 
-/*/
+/*
 //Prototype circuit and PCB V3.1
 unsigned char sen_1 = A2;
 unsigned char sen_2 = A3; 
 unsigned char sen_3 = A6; 
 unsigned char sen_4 = A7; 
-
+*/
 //input pin battery voltage
 unsigned char v_bat = A1; 
 
@@ -61,7 +61,7 @@ unsigned char duration_s; //controlling the on time of the motor lSS-functions
 unsigned char ml_per_sec = 5; //constant describing the pump behavior //TODO correct value, const unsigned char creates error? 
 
 //Variables for sensor data handling
-unsigned int soil_threshold;
+unsigned int soil_threshold = 1500; // TODO: Calibrate sensors
 
 /*********************************************
 * Function bodies for the system setup 
@@ -138,10 +138,6 @@ void SD_setup(unsigned char ledpin)
   Serial.print("Initializing SD card...");
     if (!SD.begin(CS)) {
         Serial.println("initialization failed!");
-    }
-    else 
-      {
-        Serial.println("initialization done.");
         while(true) //endless while loop with blinking indicator led showing the error 
           {
             digitalWrite(ledpin, HIGH);
@@ -149,6 +145,10 @@ void SD_setup(unsigned char ledpin)
             digitalWrite(ledpin,LOW);
             delay(200);
           }
+    }
+    else 
+      {
+        Serial.println("initialization done.");
       }
   }
 
@@ -163,6 +163,6 @@ void SD_writeData(char data)
 
   int duration_for_ml(char amount_ml)
     {
-      duration_s = amount_ml * ml_per_sec;
+      duration_s = 2000;//amount_ml * ml_per_sec*10000;
       return duration_s; 
     }

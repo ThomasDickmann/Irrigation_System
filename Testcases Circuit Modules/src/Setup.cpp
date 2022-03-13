@@ -12,7 +12,7 @@ const unsigned char interruptPin = 2; //SQW pin connected to interrupt0 on pin D
 //BAT not connected 
 
 //Time interval for system wake-up cycles 
-int wakeup_interval = 5; //TODO: Check, if int necessary
+int wakeup_interval = 3; //TODO: Check, if int necessary
 
 //SD card pins 
 const unsigned char CS = 10; //chip select pin 
@@ -21,7 +21,7 @@ const unsigned char CS = 10; //chip select pin
 //D13 CLK
 
 //Pinout for the PCB/Prototype circuit: 
-unsigned char ledpin = A0;
+unsigned char ledpin = A7; //doesn't work, needs to be another pin -> still wrong, because otherwise interference with sensor Ax pins
 
 //Pinout for the circuit: 
 //MOSFET driver pins low side switches
@@ -90,6 +90,7 @@ void wakeUp()
   RTC.alarmInterrupt(ALARM_1, false);
   RTC.alarmInterrupt(ALARM_2, false);
   RTC.squareWave(SQWAVE_NONE);
+  Serial.println("RTC initialization complete");
  }
 
 //Set an Alarm 
@@ -145,6 +146,7 @@ void SD_setup(unsigned char ledpin)
             digitalWrite(ledpin,LOW);
             delay(200);
           }
+  
     }
     else 
       {

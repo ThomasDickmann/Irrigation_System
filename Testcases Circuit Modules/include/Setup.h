@@ -56,14 +56,18 @@ extern unsigned char sen_4;
 //input pin battery voltage
 extern unsigned char v_bat; 
 
-//IDE internal libraries needed for the RTC and interrupt functionality 
+//IDE internal libraries needed for the RTC & interrupt + communications  
 #include <time.h>
-#include <SPI.h>
+#include <SPI.h> //SPI communication with SD card module
 #include <avr/sleep.h>
+#include <Wire.h> //I2C communication with BMP280 sensor 
 
 //SD and RTC libraries
 #include <SD.h>
 #include <DS3232RTC.h>
+
+//Temperature sensor library
+#include <Adafruit_BMP280.h>
 
 //Time variable for RTC
 extern time_t t; 

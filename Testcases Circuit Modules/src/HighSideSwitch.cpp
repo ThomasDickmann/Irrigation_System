@@ -23,7 +23,13 @@ HighSideSwitch::HighSideSwitch(char pinnumber)
 void HighSideSwitch::init()
 {
     pinMode(_HSSpin, OUTPUT); 
-    digitalWrite(_HSSpin, LOW); //Status on - TODO: Better initialize as on or off? 
+    delay(100);
+    /*initial on-switch after setting pin as output 
+     yielded strage switch voltage 
+     uneven step response w/ about 3.3V peak and breakdown to about 2V after 
+     -> adding delay to define on time upon initialization
+    */
+    digitalWrite(_HSSpin, HIGH); //Status off
 }
 
 void HighSideSwitch::on()

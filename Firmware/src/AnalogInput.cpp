@@ -22,8 +22,8 @@ void AnalogInput::init()
     pinMode(_analogpin, INPUT); //setting the pin as an analog input 
 }
 
-int AnalogInput::read()
+unsigned int AnalogInput::read()
 {
-    int val = analogRead(_analogpin);
+    unsigned int val = analogRead(_analogpin);
     return val;  
 }

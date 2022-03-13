@@ -194,23 +194,22 @@ void loop()
  
  /*
  //Loop over sensors and compare values to threshold (needs to be defined in setup.cpp) 
-for (int i=1; i <=4; i++) 
+for (int i=1; i <=4; i++){
 //warning regarding comparison of unsigned int and int? What needs to be changed? 
 //sizeof MySensors equal to sizeof MyValves - not very clean, how to improve the adressing?
-  { 
-    //Serial.println("Iteration " + i);
-    if(MySensors[i].read()  <  soil_threshold)
-    {
-      //Serial.println("Watering need detected. Watering plant " + i);
+  if(MySensors[i].read()  <  soil_threshold){
+      Serial.print("Watering need detected. Watering plant ");
+      Serial.println(i); 
       MyValves[i].on(); //open valve i
       Motor2.on(); //switch on pump secondary reservoir
       delay(1000); //TODO pass function to give 5ml of water, optimize with plant specific value through var. list of amount constants 
       Motor2.off(); //turn off pump secondary reservoir 
       MyValves[i].off(); //close valve i
     }
-    else 
-    { 
-      //Serial.println("No watering need detected for plant " + i);
+
+  else{ 
+      Serial.print("No watering need detected for plant ");
+      Serial.println(i); 
     }
   }
 */

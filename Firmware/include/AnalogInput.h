@@ -22,7 +22,7 @@ class AnalogInput
 
         //public functions
         void init();
-        int read(); 
+        unsigned int read(); 
       
     private: 
         char _analogpin; 

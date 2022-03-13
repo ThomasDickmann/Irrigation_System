@@ -1,5 +1,5 @@
 # Arduino Irrigation System
-This project was used to learn basic electronic design, PCB layout, and embedded software development using VS code and PlatformIO.
+The purpose of this project was to learn basic electronic design, PCB layout, and embedded software development using VS code and PlatformIO.
 
 Written in 2022 by Thomas Dickmann. 
 

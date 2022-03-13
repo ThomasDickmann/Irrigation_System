@@ -58,9 +58,9 @@ extern unsigned char v_bat;
 
 //IDE internal libraries needed for the RTC & interrupt + communications  
 #include <time.h>
-#include <SPI.h> //SPI communication with SD card module
+#include <SPI.h>    //SPI communication with SD card module
 #include <avr/sleep.h>
-#include <Wire.h> //I2C communication with BMP280 sensor 
+#include <Wire.h>   //I2C communication with BMP280 sensor 
 
 //SD and RTC libraries
 #include <SD.h>
@@ -72,9 +72,12 @@ extern unsigned char v_bat;
 //Time variable for RTC
 extern time_t t; 
 
+//String variables for data logging 
+extern String timestamp; 
+extern String sensor_data; 
+
 //Variables for controlling water dispensing 
 extern unsigned char amount_ml; //for setting the desired volume of water
-extern unsigned char duration_s; //controlling the on time of the motor lSS-functions
 extern unsigned char ml_per_sec; //constant describing the pump behavior //TODO const unsigned char creates error? 
 
 //Variables for sensor data handling 

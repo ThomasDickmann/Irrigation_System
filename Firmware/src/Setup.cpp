@@ -23,7 +23,7 @@ const unsigned char CS = 10; //chip select pin
 //Pinout for the PCB/Prototype circuit: 
 unsigned char ledpin = A7; //doesn't work, needs to be another pin -> still wrong, because otherwise interference with sensor Ax pins
 
-//Pinout for the circuit: 
+//Pinout for the circuit PCB3.0: 
 //MOSFET driver pins low side switches
 unsigned char valve_1 = 8; 
 unsigned char valve_2 = 7; 
@@ -55,13 +55,16 @@ unsigned char v_bat = A1;
 //Variables of the system 
 time_t t; //Time variable to be used in RTC functions 
 
+//String variables for data logging 
+String timestamp; 
+String sensor_data; 
+
 //Variables for controlling water dispensing 
 unsigned char amount_ml; //for setting the desired volume of water
-unsigned char duration_s; //controlling the on time of the motor lSS-functions
 unsigned char ml_per_sec = 5; //constant describing the pump behavior //TODO correct value, const unsigned char creates error? 
 
 //Variables for sensor data handling
-unsigned int soil_threshold = 1500; // TODO: Calibrate sensors
+unsigned int soil_threshold = 600; // TODO: Calibrate sensors
 
 /*********************************************
 * Function bodies for the system setup 
@@ -73,7 +76,7 @@ unsigned int soil_threshold = 1500; // TODO: Calibrate sensors
 //Wakes up the arduino from sleep state and detatches the interrupt
 void wakeUp()
 {
-  Serial.println("Interrupt has been triggered");          //Print message to serial monitor
+  Serial.println("Interrupt has been triggered, executing wakeup function");   //Print message to serial monitor
   sleep_disable();                                         //Disable sleep mode
   detachInterrupt(digitalPinToInterrupt(interruptPin));    //Removes the interrupt from pin 2;
 }
@@ -97,6 +100,10 @@ void wakeUp()
 void RTC_set_alarm()
 {
   t=RTC.get();//Gets the current time of the RTC
+  //TODO: include if statement here to check the potential overflow after adding wakeup_interval, then proceed 
+  // ... if second(t) > 60-wakeup_interval{
+  //  
+  //  }
   RTC.setAlarm(ALM1_MATCH_SECONDS , second(t) + wakeup_interval, 0, 0, 0);      // Setting alarm 1 to go off every wakeup_interval seconds 
     // RTC.setAlarm(ALM1_MATCH_HOURS , 0, 0, hour(t) + wakeup_interval, 0);     // Later: Setting alarm 1 to go off once per hour for ramp up phase
     // clear the alarm flag
@@ -105,7 +112,7 @@ void RTC_set_alarm()
   RTC.squareWave(SQWAVE_NONE);
     // enable interrupt output for Alarm 1
   RTC.alarmInterrupt(ALARM_1, true);
-  Serial.println("Alarm has been set for: "+String(hour(t))+":"+String(minute(t))+":"+String(second(t)));
+  Serial.println("Alarm has been set for: "+String(hour(t))+":"+String(minute(t))+":"+String(second(t) + wakeup_interval));
 }
 
 //preparing the arduino to go to sleep:
@@ -115,7 +122,7 @@ void RTC_sleep_prepare()
   attachInterrupt(digitalPinToInterrupt(interruptPin), wakeUp, LOW);    //attaching the interrupt, function "wakeUp" is executed when triggered---> here: Function/ISR definition!
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);                                  //setting the deepest sleep mode                                                          //creates temporary variable with information on time
   t=RTC.get();                                                          //gets current time from RTC
-  Serial.println("Going to sleep at: "+String(hour(t))+":"+String(minute(t))+":"+String(second(t)));  //prints sleep time on serial monitor
+  Serial.println("Will go to sleep at: "+String(hour(t))+":"+String(minute(t))+":"+String(second(t)));  //prints sleep time on serial monitor
   }
 
   time_t get_timestamp()
@@ -128,15 +135,14 @@ void RTC_setup() //single function to set up the RTC in the setup fct of main.cp
   {
     pinMode(interruptPin, INPUT_PULLUP);  
     RTC_init();
-    RTC_set_alarm(); 
-  }
+   }
 
 
 //SD data logging functionality
 
 void SD_setup(unsigned char ledpin)
   {
-  Serial.print("Initializing SD card...");
+  Serial.print("Initializing SD card... ");
     if (!SD.begin(CS)) {
         Serial.println("initialization failed!");
         while(true) //endless while loop with blinking indicator led showing the error 
@@ -165,6 +171,6 @@ void SD_writeData(char data)
 
   int duration_for_ml(char amount_ml)
     {
-      duration_s = 2000;//amount_ml * ml_per_sec*10000;
-      return duration_s; 
+      int duration = 1000;  //amount_ml * ml_per_sec*10000 in [ms] 
+      return duration; 
     }

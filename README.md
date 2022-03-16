@@ -1,3 +1,5 @@
+![Use Case Diagram](./images/Watering_System_ASM v13.png)
+
 # Arduino Irrigation System
 The purpose of this project was to learn basic electronic design, PCB layout, and embedded software development using VS code and PlatformIO.
 

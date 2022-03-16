@@ -1,4 +1,4 @@
-![Use Case Diagram](./images/Watering_System_ASM v13.png)
+![Use Case Diagram](https://github.com/ThomasDickmann/Irrigation_System/blob/main/images/Watering_System_ASM%20v13.png)
 
 # Arduino Irrigation System
 The purpose of this project was to learn basic electronic design, PCB layout, and embedded software development using VS code and PlatformIO.

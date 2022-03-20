@@ -76,6 +76,8 @@ extern time_t t;
 extern String timestamp; 
 extern String sensor_data; 
 
+
+
 //Variables for controlling water dispensing 
 extern unsigned char amount_ml; //for setting the desired volume of water
 extern unsigned char ml_per_sec; //constant describing the pump behavior //TODO const unsigned char creates error? 

@@ -20,35 +20,28 @@ const unsigned char CS = 10; //chip select pin
 //D12 MISO 
 //D13 CLK
 
-//Pinout for the PCB/Prototype circuit: 
-unsigned char ledpin = A7; //doesn't work, needs to be another pin -> still wrong, because otherwise interference with sensor Ax pins
+//Pinout for the PCB 3.1 & prototype circuit: 
+unsigned char ledpin = A0;
 
-//Pinout for the circuit PCB3.0: 
 //MOSFET driver pins low side switches
 unsigned char valve_1 = 8; 
 unsigned char valve_2 = 7; 
-unsigned char valve_3 = 6; 
-unsigned char valve_4 = 5;
+unsigned char valve_3 = 5; 
+unsigned char valve_4 = 4;
  
 unsigned char mot_1 = 3;  
-unsigned char mot_2 = 4; 
+unsigned char mot_2 = 6; 
 
 //MOSFET driver pin high side switch 
 unsigned char hss_sig = 9; 
 
 //input pins soil sensors
-// PINTOUT PCB V3.0:
-unsigned char sen_1 = A0;
-unsigned char sen_2 = A1; 
-unsigned char sen_3 = A2; 
-unsigned char sen_4 = A3; 
-/*
 //Prototype circuit and PCB V3.1
 unsigned char sen_1 = A2;
 unsigned char sen_2 = A3; 
 unsigned char sen_3 = A6; 
 unsigned char sen_4 = A7; 
-*/
+
 //input pin battery voltage
 unsigned char v_bat = A1; 
 
@@ -64,7 +57,7 @@ unsigned char amount_ml; //for setting the desired volume of water
 unsigned char ml_per_sec = 5; //constant describing the pump behavior //TODO correct value, const unsigned char creates error? 
 
 //Variables for sensor data handling
-unsigned int soil_threshold = 600; // TODO: Calibrate sensors
+unsigned int soil_threshold = 800; // TODO: Calibrate sensors
 
 /*********************************************
 * Function bodies for the system setup 

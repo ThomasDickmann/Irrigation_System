@@ -10,6 +10,8 @@
 /**********************************************************************************************************
  *  OPL project: 
  * 
+ * TODO: Sleep.h not found when using 33IoT envorionment in Platformio.ini (build): https://www.arduino.cc/reference/en/libraries/arduino-low-power/
+ * TODO: When putting multiple environments in the platformio.ini file, the serial monitor doesn't work anymore 
  * TODO: Flesh out pseudo code for service routine 
  * TODO: aggressive behavior invoked error with loop over object array
  * TODO: Add array of water amounts per plant
@@ -27,6 +29,8 @@
  * TODO: Better understand SD functions 
  * TODO: BP writing multiple variables in constant format string -> Input Master Thesis %D%D%D%D%D w/ const digit space 
  * TODO: How to use the LED object and LED.cpp functions in SD setup function? 
+ * 
+ * TODO: Reserach target specific code sections (IoT33 vs. regular nano): https://community.platformio.org/t/changing-destination-boards/4751/2
  * 
  * Done 09.01.: Mixup with analog pins. Schematic adjusted and prototype resoldered, need to be fixed in PCB V3.1 (reorder) 
  * Done 12.01.: Understand where to declare which variables without conflict and follow BP -> Use of extern and move of declarations into setup.cpp
@@ -68,13 +72,17 @@ AnalogInput Sensor4(sen_4);
 //TODO: Move to setup.cpp? Possible/correct practise? 
 File myData; 
 
+//Creation of BMP sensor object
+Adafruit_BMP280 bmp; 
+//CHECK - object creation doesn't fuck up the serial communication 
+
 //Creating a list of objects to loop over in the service cylce 
 AnalogInput MySensors[] = {Sensor1, Sensor2, Sensor3, Sensor4};
 LowSideSwitch MyValves[] = {Valve1, Valve2, Valve3, Valve4};
 
 void setup()
 {
-  //Initializing the hardware objects (pins, default states)
+  //Initializing the hardware objects (pins, default states) 
   //Motors off, valves closed, HSS power on
   LED_Status.init(); 
 
@@ -98,11 +106,33 @@ void setup()
   
   //Testing LSS stages --> Remove when actual use planned ;) 
   Valve1.on();
+  delay(50);
   Valve2.on(); 
+  delay(50);
   Valve3.on();
-  Valve4.on(); 
-  Motor1.on(); 
-  Motor2.on(); 
+  delay(50);
+  Valve4.on();
+  delay(50); 
+  Motor1.on();
+  delay(50);
+  Motor2.on();
+  delay(1000);
+
+  Motor1.off(); 
+  Motor2.off(); 
+  Valve1.off();
+  Valve2.off();
+  Valve3.off(); 
+  Valve4.off();  
+
+  LED_Status.on(); 
+  delay(100);
+  LED_Status.off();
+  delay(100);
+  LED_Status.on(); 
+  delay(100);
+  LED_Status.off();
+  delay(100);
 
   //Starting serial communication
   Serial.begin(115200); 
@@ -110,6 +140,18 @@ void setup()
   //Initializing RTC (only needed once)
   RTC_setup(); 
   
+/*  
+//When using the BMP, the code compiles, but it fucks up the RTC timestamps on the serial monitor 
+bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID); //adressing BMP with correct bus adress 
+//CHECK - Object initialization fucks up writing the timestamp data entry for the SD card to the monitor
+  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     // Operating Mode. 
+        Adafruit_BMP280::SAMPLING_X2,               // Temp. oversampling 
+        Adafruit_BMP280::SAMPLING_X16,              // Pressure oversampling 
+        Adafruit_BMP280::FILTER_X16,                // Filtering. 
+        Adafruit_BMP280::STANDBY_MS_500);           // Standby time. 
+//CHECK - Settings don't seem to fuck up more stuff 
+*/
+
   //End of setup function 
 }
 
@@ -128,7 +170,7 @@ void loop()
   sleep_cpu();  //activating sleep mode
 
   //Code to be executed after arduino has been woken up:
-  LED_Status.on(); //turns on status led to indicate wakeup/begin of service cycle
+  //LED_Status.on(); //turns on status led to indicate wakeup/begin of service cycle
   HSS.on();        //connecting power to sensors and SD card 
                                            
   //Get current time stamp from RTC
@@ -149,6 +191,7 @@ void loop()
   *** Code for reading all sensor data ****
   *****************************************/
 
+  //Reading the soil sensors 
   Serial.println("Reading Sensors: "); 
   Serial.print("Sensor 1: "); 
   Serial.println(Sensor1.read());
@@ -158,8 +201,18 @@ void loop()
   Serial.println(Sensor3.read());
   Serial.print("Sensor 4: ");  
   Serial.println(Sensor4.read()); 
+/*
+  //BMP 280 temperature and pressure sensor 
+  Serial.print(F("Temperature = "));
+  Serial.print(bmp.readTemperature());
+  Serial.println(" *C");
+  Serial.print(F("Pressure = "));
+  Serial.print(bmp.readPressure());
+  Serial.println(" hPa");
+  //CHECK - Using these function in Loop fucks up the RTC and Serial real good. No more Strings before timestamps in set_alarm and sleep_prepare, timestamp SD only consists of seconds
+*/
 
-//Create logging entry for SD card 
+  //Create logging entry for SD card 
   Serial.println("Creating data entry for SD card:");
   timestamp = (String(year(t)) +"/" +String(month(t)) +"/" +String(day(t)) +" - " +String(hour(t))+":"+String(minute(t))+":"+String(second(t)));  
   //String sensor_data = (String sensor 1-4, string temperature, string pressure, string amount)
@@ -192,7 +245,7 @@ void loop()
  delay(2000); //TODO pass fuction to give 15ml of water 
  Motor1.off();
  
- /*
+ 
  //Loop over sensors and compare values to threshold (needs to be defined in setup.cpp) 
 for (int i=1; i <=4; i++){
 //warning regarding comparison of unsigned int and int? What needs to be changed? 
@@ -200,11 +253,11 @@ for (int i=1; i <=4; i++){
   if(MySensors[i].read()  <  soil_threshold){
       Serial.print("Watering need detected. Watering plant ");
       Serial.println(i); 
-      MyValves[i].on(); //open valve i
+      MyValves[i-1].on(); //open valve i
       Motor2.on(); //switch on pump secondary reservoir
       delay(1000); //TODO pass function to give 5ml of water, optimize with plant specific value through var. list of amount constants 
       Motor2.off(); //turn off pump secondary reservoir 
-      MyValves[i].off(); //close valve i
+      MyValves[i-1].off(); //close valve i
     }
 
   else{ 
@@ -212,7 +265,7 @@ for (int i=1; i <=4; i++){
       Serial.println(i); 
     }
   }
-*/
+
 
   //TODO: Create entry for amount in data entry for routine 
 

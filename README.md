@@ -19,3 +19,5 @@ Finally, a manual will be created after everything is wrapped up and tested.
 + 4 analog sensor inputs with filter capacitors 
 + High Side Switch (HSS) to power analog sensors and SD card only when in use (to reduce energy consumption) 
 + Data logging of soil moisture levels, temperature and air pressure with time stamps for long term observation  
+
+![Use Case Diagram](https://github.com/ThomasDickmann/Irrigation_System/blob/main/images/IMG_2345.jpg)

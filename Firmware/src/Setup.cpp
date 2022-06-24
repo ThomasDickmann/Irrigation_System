@@ -4,6 +4,8 @@
 * Definition of constants for the system  
 **********************************************/
 
+//*** Hardware constants (see Setup.h for declaration) ***
+
 //RTC Pins 
 const unsigned char interruptPin = 2; //SQW pin connected to interrupt0 on pin D2 on Nano 
 //A4 SDA
@@ -11,16 +13,14 @@ const unsigned char interruptPin = 2; //SQW pin connected to interrupt0 on pin D
 //RST not connected
 //BAT not connected 
 
-//Time interval for system wake-up cycles 
-int wakeup_interval = 3; //TODO: Check, if int necessary
-
 //SD card pins 
 const unsigned char CS = 10; //chip select pin 
 //D11 MOSI 
 //D12 MISO 
 //D13 CLK
 
-//Pinout for the PCB 3.1 & prototype circuit: 
+//Pinout for the PCB/Prototype circuit: 
+//Indicator/status LED pin
 unsigned char ledpin = A0;
 
 //MOSFET driver pins low side switches
@@ -36,7 +36,6 @@ unsigned char mot_2 = 6;
 unsigned char hss_sig = 9; 
 
 //input pins soil sensors
-//Prototype circuit and PCB V3.1
 unsigned char sen_1 = A2;
 unsigned char sen_2 = A3; 
 unsigned char sen_3 = A6; 
@@ -44,6 +43,11 @@ unsigned char sen_4 = A7;
 
 //input pin battery voltage
 unsigned char v_bat = A1; 
+
+//*** Firmware constants/variables (not included in Setup.h) ***
+
+//Time interval for system wake-up cycles 
+int wakeup_interval = 3; //TODO: Check, if int necessary
 
 //Variables of the system 
 time_t t; //Time variable to be used in RTC functions 

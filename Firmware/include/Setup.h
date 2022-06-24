@@ -14,7 +14,11 @@
 
 /*********************************************
 * Declaration of constants for the system  
+* using extern -> Definition in Setup.cpp
+* declaration in header necessary to access variables via their names in main.cpp
 **********************************************/
+
+//Hardware constants
 
 //RTC Pins 
 extern const unsigned char interruptPin; //SQW pin connected to interrupt0 on pin D2 on Nano 
@@ -29,12 +33,10 @@ extern const unsigned char CS; //chip select pin
 //D12 MISO 
 //D13 CLK
 
-//Declaration of constants for the system 
-
 //Pinout for the PCB/Prototype circuit: 
+//Indicator/status LED pin
 extern unsigned char ledpin;
 
-//Pinout for the circuit: 
 //MOSFET driver pins low side switches
 extern unsigned char valve_1; 
 extern unsigned char valve_2; 
@@ -55,6 +57,7 @@ extern unsigned char sen_4;
 
 //input pin battery voltage
 extern unsigned char v_bat; 
+
 
 //IDE internal libraries needed for the RTC & interrupt + communications  
 #include <time.h>

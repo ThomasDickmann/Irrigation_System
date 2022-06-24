@@ -140,13 +140,30 @@ void setup()
     delay(150);
   }
 
+  //  *** Sensors and SD card check *** 
   //Powering the HSS 
   HSS.on(); 
 
-/*
-  //Initializing RTC (only needed once)
-  RTC_setup(); 
-*/ 
+//Adding the sensor check leads to SD card not being able to open the file... wtf. 
+/* 
+  //Checking the analog sensor readings: 
+  Serial.println("Checking soil sensors and water demand... "); 
+  for (int i=0; i <4; i++){
+  Serial.print("Sensor "); 
+  Serial.print(i+1);
+  Serial.print(": ");
+  Serial.println(MySensors[i].read());
+  if(MySensors[i].read()  <  soil_threshold){
+      Serial.print("Watering need detected. Watering plant ");
+      Serial.println(i+1); 
+    }
+  else{ 
+      Serial.print("No watering need detected for plant ");
+      Serial.println(i+1); 
+    }
+  }
+Serial.println("Analog sensor check finished. \n"); 
+*/
 
   //When using the BMP, the code compiles, but it fucks up the RTC timestamps on the serial monitor 
   bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID); //adressing BMP with correct bus adress 
@@ -157,6 +174,15 @@ void setup()
           Adafruit_BMP280::FILTER_X16,                // Filtering. 
           Adafruit_BMP280::STANDBY_MS_500);           // Standby time. 
   //CHECK - Settings don't seem to fuck up more stuff 
+
+
+
+  //  *** RTC setup and check *** 
+/*
+  //Initializing RTC (only needed once)
+  RTC_setup(); 
+*/ 
+
 
   //End of setup function 
 }

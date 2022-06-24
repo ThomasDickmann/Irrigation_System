@@ -190,17 +190,6 @@ void loop()
   /****************************************
   *** Code for reading all sensor data ****
   *****************************************/
-
-  //Reading the soil sensors 
-  Serial.println("Reading Sensors: "); 
-  Serial.print("Sensor 1: "); 
-  Serial.println(Sensor1.read());
-  Serial.print("Sensor 2: ");  
-  Serial.println(Sensor2.read());
-  Serial.print("Sensor 3: ");  
-  Serial.println(Sensor3.read());
-  Serial.print("Sensor 4: ");  
-  Serial.println(Sensor4.read()); 
 /*
   //BMP 280 temperature and pressure sensor 
   Serial.print(F("Temperature = "));
@@ -247,22 +236,26 @@ void loop()
  
  
  //Loop over sensors and compare values to threshold (needs to be defined in setup.cpp) 
-for (int i=1; i <=4; i++){
-//warning regarding comparison of unsigned int and int? What needs to be changed? 
-//sizeof MySensors equal to sizeof MyValves - not very clean, how to improve the adressing?
+  Serial.println("Reading soil sensors, checking for water demand: "); 
+  for (int i=0; i <4; i++){
+  Serial.print("Sensor "); 
+  Serial.print(i+1);
+  Serial.print(": ");
+  Serial.println(MySensors[i].read());
+
   if(MySensors[i].read()  <  soil_threshold){
       Serial.print("Watering need detected. Watering plant ");
-      Serial.println(i); 
-      MyValves[i-1].on(); //open valve i
+      Serial.println(i+1); 
+      MyValves[i].on(); //open valve i
       Motor2.on(); //switch on pump secondary reservoir
       delay(1000); //TODO pass function to give 5ml of water, optimize with plant specific value through var. list of amount constants 
       Motor2.off(); //turn off pump secondary reservoir 
-      MyValves[i-1].off(); //close valve i
+      MyValves[i].off(); //close valve i
     }
 
   else{ 
       Serial.print("No watering need detected for plant ");
-      Serial.println(i); 
+      Serial.println(i+1); 
     }
   }
 
@@ -285,4 +278,5 @@ for (int i=1; i <=4; i++){
   Serial.println("");
 
   //End of loop function 
+  
   } 

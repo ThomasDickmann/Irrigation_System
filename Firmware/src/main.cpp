@@ -10,6 +10,10 @@
 /**********************************************************************************************************
  *  OPL project: 
  * 
+ * TODO: Resolve conflict with RTC and BMP. When taking RTC out of the picture completely, things seem to work fine 
+ * No address conflict - checked via I2C scanner:
+ * RTC I2C address is 0x68 
+ * BMP I2C address is 0x76
  * TODO: Sleep.h not found when using 33IoT envorionment in Platformio.ini (build): https://www.arduino.cc/reference/en/libraries/arduino-low-power/
  * TODO: When putting multiple environments in the platformio.ini file, the serial monitor doesn't work anymore 
  * TODO: Flesh out pseudo code for service routine 
@@ -24,7 +28,6 @@
  * TODO: Open and write sensor Data on SD card every service cycle 
  * TODO: Clean up and understand RTC setup and ISR/interrupt handling 
  * TODO: Move time offset out of set alarm function, make input for function (clearer concept)
- * TODO: Resolder LED on in socket -> Ability to take out/switch off when not needed
  * TODO: Fix overflow problem with Seconds >60 values for interrupt alarm timer -> extrpolate to hours
  * TODO: Better understand SD functions 
  * TODO: BP writing multiple variables in constant format string -> Input Master Thesis %D%D%D%D%D w/ const digit space 
@@ -68,6 +71,10 @@ AnalogInput Sensor2(sen_2);
 AnalogInput Sensor3(sen_3); 
 AnalogInput Sensor4(sen_4); 
 
+//Creating a list of objects to loop over in the service cylce 
+AnalogInput MySensors[] = {Sensor1, Sensor2, Sensor3, Sensor4};
+LowSideSwitch MyValves[] = {Valve1, Valve2, Valve3, Valve4};
+
 //Creation of File object for SD card 
 //TODO: Move to setup.cpp? Possible/correct practise? 
 File myData; 
@@ -75,10 +82,6 @@ File myData;
 //Creation of BMP sensor object
 Adafruit_BMP280 bmp; 
 //CHECK - object creation doesn't fuck up the serial communication 
-
-//Creating a list of objects to loop over in the service cylce 
-AnalogInput MySensors[] = {Sensor1, Sensor2, Sensor3, Sensor4};
-LowSideSwitch MyValves[] = {Valve1, Valve2, Valve3, Valve4};
 
 void setup()
 {
@@ -130,32 +133,30 @@ void setup()
   Serial.println("Valve and motor check finished. \n"); 
 
   
-  LED_Status.on(); 
-  delay(100);
-  LED_Status.off();
-  delay(100);
-  LED_Status.on(); 
-  delay(100);
-  LED_Status.off();
-  delay(100);
+  for (int i=0; i <4; i++){
+    LED_Status.on();
+    delay(150);
+    LED_Status.off(); 
+    delay(150);
+  }
 
   //Powering the HSS 
   HSS.on(); 
 
+/*
   //Initializing RTC (only needed once)
   RTC_setup(); 
-  
-/*  
-//When using the BMP, the code compiles, but it fucks up the RTC timestamps on the serial monitor 
-bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID); //adressing BMP with correct bus adress 
-//CHECK - Object initialization fucks up writing the timestamp data entry for the SD card to the monitor
-  bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     // Operating Mode. 
-        Adafruit_BMP280::SAMPLING_X2,               // Temp. oversampling 
-        Adafruit_BMP280::SAMPLING_X16,              // Pressure oversampling 
-        Adafruit_BMP280::FILTER_X16,                // Filtering. 
-        Adafruit_BMP280::STANDBY_MS_500);           // Standby time. 
-//CHECK - Settings don't seem to fuck up more stuff 
-*/
+*/ 
+
+  //When using the BMP, the code compiles, but it fucks up the RTC timestamps on the serial monitor 
+  bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID); //adressing BMP with correct bus adress 
+  //CHECK - Object initialization fucks up writing the timestamp data entry for the SD card to the monitor
+    bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     // Operating Mode. 
+          Adafruit_BMP280::SAMPLING_X2,               // Temp. oversampling 
+          Adafruit_BMP280::SAMPLING_X16,              // Pressure oversampling 
+          Adafruit_BMP280::FILTER_X16,                // Filtering. 
+          Adafruit_BMP280::STANDBY_MS_500);           // Standby time. 
+  //CHECK - Settings don't seem to fuck up more stuff 
 
   //End of setup function 
 }
@@ -163,6 +164,10 @@ bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID); //adressing BMP with correct bus a
 
 void loop()
 {
+  /**************************************************
+   * Code for the sleep state routine between loops *
+   **************************************************/
+  /*
   //Set new alarm with defined time offset 
   RTC_set_alarm(); //Writes the new alarm time to the serial monitor
   delay(100); 
@@ -173,18 +178,20 @@ void loop()
   RTC_sleep_prepare(); //writes the time of going to sleep to the serial monitor 
   delay(100); 
   sleep_cpu();  //activating sleep mode
+*/
 
   //Code to be executed after arduino has been woken up:
-  //LED_Status.on(); //turns on status led to indicate wakeup/begin of service cycle
+  LED_Status.on(); //turns on status led to indicate wakeup/begin of service cycle
   HSS.on();        //connecting power to sensors and SD card 
-                                           
+
+/*                                        
   //Get current time stamp from RTC
   get_timestamp(); 
   //Printing wakeup time to the serial monitor
   Serial.println("Controller has been woken up");
   Serial.println("Time: "+String(hour(t))+":"+String(minute(t))+":"+String(second(t)));  
-
-    //Initializing the SD after powering it down (error indication by status led, won't work on PCB V3.0)
+*/
+  //Initializing the SD after powering it down (error indication by status led, won't work on PCB V3.0)
   SD_setup(ledpin); 
 
   //Allowing the system to settle for a while
@@ -195,7 +202,7 @@ void loop()
   /****************************************
   *** Code for reading all sensor data ****
   *****************************************/
-/*
+
   //BMP 280 temperature and pressure sensor 
   Serial.print(F("Temperature = "));
   Serial.print(bmp.readTemperature());
@@ -204,13 +211,13 @@ void loop()
   Serial.print(bmp.readPressure());
   Serial.println(" hPa");
   //CHECK - Using these function in Loop fucks up the RTC and Serial real good. No more Strings before timestamps in set_alarm and sleep_prepare, timestamp SD only consists of seconds
-*/
+
 
   //Create logging entry for SD card 
   Serial.println("Creating data entry for SD card:");
-  timestamp = (String(year(t)) +"/" +String(month(t)) +"/" +String(day(t)) +" - " +String(hour(t))+":"+String(minute(t))+":"+String(second(t)));  
+  //timestamp = (String(year(t)) +"/" +String(month(t)) +"/" +String(day(t)) +" - " +String(hour(t))+":"+String(minute(t))+":"+String(second(t)));  
   //String sensor_data = (String sensor 1-4, string temperature, string pressure, string amount)
-  Serial.println(timestamp); //+ sensor_data
+  Serial.println("testprint"); //+ sensor_data
   //TODO: create string object in setup and only overwrite the value here each time the service cycle is performed
   //TODO: Write newly overwritten string object to sd card with function (input string, function details in setup.cpp)
 
@@ -238,7 +245,6 @@ void loop()
  Motor1.on(); 
  delay(2000); //TODO pass fuction to give 15ml of water 
  Motor1.off();
- 
  
  //Loop over sensors and compare values to threshold (needs to be defined in setup.cpp) 
   Serial.println("Reading soil sensors, checking for water demand: "); 

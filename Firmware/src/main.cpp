@@ -101,41 +101,46 @@ void setup()
   Sensor3.init(); 
   Sensor4.init(); 
 
-  //Powering the HSS 
-  HSS.on(); 
-  
-  //Testing LSS stages --> Remove when actual use planned ;) 
-  Valve1.on();
-  delay(50);
-  Valve2.on(); 
-  delay(50);
-  Valve3.on();
-  delay(50);
-  Valve4.on();
-  delay(50); 
-  Motor1.on();
-  delay(50);
-  Motor2.on();
-  delay(1000);
-
-  Motor1.off(); 
-  Motor2.off(); 
-  Valve1.off();
-  Valve2.off();
-  Valve3.off(); 
-  Valve4.off();  
-
-  LED_Status.on(); 
-  delay(100);
-  LED_Status.off();
-  delay(100);
-  LED_Status.on(); 
-  delay(100);
-  LED_Status.off();
-  delay(100);
-
   //Starting serial communication
   Serial.begin(115200); 
+  
+/********************************************   
+*   Initial test of hardware and peripherals
+*********************************************/
+
+  //  *** Valves and motors check *** 
+  //Open the valves sequentially 
+  Serial.println("Checking valves and motors... "); 
+  for (int i=0; i <4; i++){
+    MyValves[i].on();
+    delay(150);
+  }
+  //start both motors, fill up reservoir and lines 
+  Motor1.on();
+  delay(2000); //reservoir buffer needs to be bigger to prevent dry run on pump 2
+  Motor2.on();
+  delay(500); //TODO: Adjust, so that lines will be filled but little to no water makes it through the valves
+  //stop pumps
+  Motor1.off(); 
+  Motor2.off(); 
+  //close valves 
+  for (int i=0; i <4; i++){
+    MyValves[i].off();
+  }
+  Serial.println("Valve and motor check finished. \n"); 
+
+  
+  LED_Status.on(); 
+  delay(100);
+  LED_Status.off();
+  delay(100);
+  LED_Status.on(); 
+  delay(100);
+  LED_Status.off();
+  delay(100);
+
+  //Powering the HSS 
+  HSS.on(); 
 
   //Initializing RTC (only needed once)
   RTC_setup(); 
@@ -185,7 +190,7 @@ void loop()
   //Allowing the system to settle for a while
   delay(300); 
 
-  Serial.println(""); //Line break 
+  Serial.println("--- Service cycle ---"); 
 
   /****************************************
   *** Code for reading all sensor data ****
@@ -220,10 +225,10 @@ void loop()
   }
   // if the file didn't open, print an error:
   else {
-    Serial.println("error opening data.txt");
+    Serial.println("error opening data.txt \n");
   }
 
-  Serial.println(""); //Line break 
+
 
 /****************************************
 ** Code for watering service routine ****
@@ -273,9 +278,7 @@ void loop()
   LED_Status.off(); //turns off status led to indicate finished service cycle
   HSS.off();        //disconnecting power to sensors and SD card 
 
-  Serial.println("Service cycle finished!");
-  Serial.println(""); //double line break 
-  Serial.println("");
+  Serial.println("--- Service cycle finished! ---\n");
 
   //End of loop function 
   

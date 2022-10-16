@@ -54,6 +54,28 @@ void printDigits(int digits)
 
 /* Setup function */
 void setup(){
+    
+//Initializing the hardware objects (pins, default states) 
+//Motors off, valves closed, HSS power on
+  LED_Status.init(); 
+
+  Valve1.init(); 
+  Valve2.init();
+  Valve3.init(); 
+  Valve4.init(); 
+
+  Motor1.init();
+  Motor2.init();
+
+  HSS.init(); 
+
+  Sensor1.init(); 
+  Sensor2.init(); 
+  Sensor3.init(); 
+  Sensor4.init(); 
+
+
+
     Serial.begin(115200);
     while ( !Serial ) delay(100);   // wait for native usb
     

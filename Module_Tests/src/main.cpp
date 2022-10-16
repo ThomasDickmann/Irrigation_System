@@ -1,13 +1,34 @@
 #include <Arduino.h>
 
-#include "Setup.h"
+//Setup and Hardware classes includes 
+#include "Setup.h" //including system constants and RTC + SD related routines
+#include "LED.h" //class for LEDS
+#include "LowSideSwitch.h" //class for LSS drivers
+#include "HighSideSwitch.h" //class for HSS stages
+#include "AnalogInput.h" //analog sensor class 
 
-//Hardware object creation 
+//Creating hardware objects 
+LED LED_Status(ledpin); 
+
+LowSideSwitch Valve1(valve_1); 
+LowSideSwitch Valve2(valve_2); 
+LowSideSwitch Valve3(valve_3); 
+LowSideSwitch Valve4(valve_4); 
+
+LowSideSwitch Motor1(mot_1); 
+LowSideSwitch Motor2(mot_2);
+
+HighSideSwitch HSS(hss_sig); 
+ 
+AnalogInput Sensor1(sen_1); 
+AnalogInput Sensor2(sen_2); 
+AnalogInput Sensor3(sen_3); 
+AnalogInput Sensor4(sen_4); 
+
 Adafruit_BMP280 bmp; //Creation of BMP sensor object
 //Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
 //Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
 
-//Object creation 
 DS3232RTC myRTC; //RTC object 
 File myFile; //DC file object 
 

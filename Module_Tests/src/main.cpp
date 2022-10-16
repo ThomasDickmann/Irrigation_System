@@ -79,6 +79,12 @@ void printDigits(int digits)
 }
 
 
+/******* OPL test project *********** 
+* write timestamp in string + print 
+* read sensors and write everything to SD 
+* add sleep/wakeup functionality 
+************************************/ 
+
 /* Setup function */
 void setup(){
     Serial.begin(115200);

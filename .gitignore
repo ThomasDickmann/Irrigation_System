@@ -1,0 +1,9 @@
+#Irrigation_System repo 
+
+#optioms for excluding: wildcards *, negations !, square brackets for character/character ranges, multiple directories **/exampledir/*.log e.g. 
+
+# MacOs 
+.DS_Store
+
+#Windows 
+thumbs.db 

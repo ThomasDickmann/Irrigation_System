@@ -132,15 +132,7 @@ void setup()
   }
   Serial.println("Valve and motor check finished. \n"); 
 
-  
-  for (int i=0; i <4; i++){
-    LED_Status.on();
-    delay(150);
-    LED_Status.off(); 
-    delay(150);
-  }
-
-  //  *** Sensors and SD card check *** 
+   //  *** Sensors and SD card check *** 
   //Powering the HSS 
   HSS.on(); 
 
@@ -165,6 +157,7 @@ void setup()
 Serial.println("Analog sensor check finished. \n"); 
 */
 
+ 
   //When using the BMP, the code compiles, but it fucks up the RTC timestamps on the serial monitor 
   bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID); //adressing BMP with correct bus adress 
   //CHECK - Object initialization fucks up writing the timestamp data entry for the SD card to the monitor
@@ -175,24 +168,32 @@ Serial.println("Analog sensor check finished. \n");
           Adafruit_BMP280::STANDBY_MS_500);           // Standby time. 
   //CHECK - Settings don't seem to fuck up more stuff 
 
-
-
   //  *** RTC setup and check *** 
 /*
   //Initializing RTC (only needed once)
   RTC_setup(); 
 */ 
 
+ //flashing the status LED to indicate to signal finish of setup function 
+  for (int i=0; i <4; i++){
+    LED_Status.on();
+    delay(150);
+    LED_Status.off(); 
+    delay(150);
+  }
 
+  Serial.println("System check and setup cycle finished. \n"); 
   //End of setup function 
 }
 
 
 void loop()
 {
-  /**************************************************
-   * Code for the sleep state routine between loops *
-   **************************************************/
+/*************************************************
+* Code for the sleep state routine between loops *
+**************************************************/
+
+Serial.println("--- Set alarm and initialize SD card --- ");  
   /*
   //Set new alarm with defined time offset 
   RTC_set_alarm(); //Writes the new alarm time to the serial monitor
@@ -215,7 +216,12 @@ void loop()
   get_timestamp(); 
   //Printing wakeup time to the serial monitor
   Serial.println("Controller has been woken up");
-  Serial.println("Time: "+String(hour(t))+":"+String(minute(t))+":"+String(second(t)));  
+  Serial.print("Time: ");
+  Serial.print(String(hour(t)));
+  Serial.print(":");
+  Serial.print(String(minute(t)));
+  Serial.print(":");
+  Serial.println(String(second(t)));  
 */
   //Initializing the SD after powering it down (error indication by status led, won't work on PCB V3.0)
   SD_setup(ledpin); 
@@ -223,7 +229,7 @@ void loop()
   //Allowing the system to settle for a while
   delay(300); 
 
-  Serial.println("--- Service cycle ---"); 
+  Serial.println("--- Service cycle begin --- \n"); 
 
   /****************************************
   *** Code for reading all sensor data ****
@@ -236,7 +242,7 @@ void loop()
   Serial.print(F("Pressure = "));
   Serial.print(bmp.readPressure());
   Serial.println(" hPa");
-  //CHECK - Using these function in Loop fucks up the RTC and Serial real good. No more Strings before timestamps in set_alarm and sleep_prepare, timestamp SD only consists of seconds
+  //CHECK - Using these functions in Loop fucks up the RTC and Serial real good. No more Strings before timestamps in set_alarm and sleep_prepare, timestamp SD only consists of seconds
 
 
   //Create logging entry for SD card 
@@ -252,13 +258,27 @@ void loop()
   if (myData) {
     Serial.print("Writing to file... ");
     // Write to file
-    myData.println("Testing text 1, 2 ,3...");
+    myData.print(String(hour(t)));
+    myData.print(":");
+    myData.print(String(minute(t)));
+    myData.print(":");
+    myData.println(String(second(t))); 
+   
+    myData.print("Data Sensor 1"); 
+    myData.print("Data Sensor 2"); 
+    myData.print("Data Sensor 3"); 
+    myData.print("Data Sensor 4");
+
+    myData.print("Bool Pump 1");
+    myData.print("Bool Pump 2");
+
     myData.close(); // close the file
-    Serial.println("Done.");
+
+    Serial.println("Data written successfully! \n");
   }
   // if the file didn't open, print an error:
   else {
-    Serial.println("error opening data.txt \n");
+    Serial.println("Error opening data.txt \n");
   }
 
 

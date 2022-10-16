@@ -1,62 +1,8 @@
 #include <Arduino.h>
 
-#include <Wire.h> //I2C communication with BMP280 sensor and RTC
+#include "Setup.h"
 
-//SD libraries
-#include <SPI.h> //SPI communication with SD card module
-#include <SD.h>
-
-//RTC libraries
-#include <DS3232RTC.h>
-#include <time.h>
-//#include <avr/sleep.h>
-
-//Temperature sensor library
-#include <Adafruit_BMP280.h>
-
-
-/*  -------------- Pinout for circuit board ------------- */ 
-//RTC Pins 
-//const unsigned char interruptPin = 2; //SQW pin connected to interrupt0 on pin D2 on Nano 
-//A4 SDA
-//A5 SCL 
-//RST not connected
-//BAT not connected 
-
-//SD card pins 
-int CS = 10; //chip select pin 
-//D11 MOSI 
-//D12 MISO 
-//D13 CLK
-
-//Pinout for the PCB/Prototype circuit: 
-//Indicator/status LED pin
-//unsigned char ledpin = A0;
-
-//MOSFET driver pins low side switches
-/*unsigned char valve_1 = 8; 
-unsigned char valve_2 = 7; 
-unsigned char valve_3 = 5; 
-unsigned char valve_4 = 4;
- 
-unsigned char mot_1 = 3;  
-unsigned char mot_2 = 6; */
-
-//MOSFET driver pin high side switch 
-const int hss_sig = 9; 
-
-//input pins soil sensors
-/*unsigned char sen_1 = A2;
-unsigned char sen_2 = A3; 
-unsigned char sen_3 = A6; 
-unsigned char sen_4 = A7; */
-
-//input pin battery voltage
-//unsigned char v_bat = A1; 
-
-/*  -------------- Pinout for circuit board ------------- */ 
-
-//Object creation 
+//Hardware object creation 
 Adafruit_BMP280 bmp; //Creation of BMP sensor object
 //Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
 //Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
@@ -172,11 +118,13 @@ void loop(){
     myFile = SD.open("test.txt");
     if (myFile) {
         Serial.println("test.txt:");
-
+        Serial.println(" -- File would be read here --");
+        /*
         // read from the file until there's nothing else in it:
         while (myFile.available()) {
-        Serial.write(myFile.read());
-        }
+        //Serial.write(myFile.read());
+        Serial.println(" -- File would be read here");
+        }*/
         // close the file:
         myFile.close();
     } else {

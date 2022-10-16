@@ -55,6 +55,9 @@ void printDigits(int digits)
 /* Setup function */
 void setup(){
     
+Serial.begin(115200);
+while ( !Serial ) delay(100);   // wait for native usb
+
 //Initializing the hardware objects (pins, default states) 
 //Motors off, valves closed, HSS power on
   LED_Status.init(); 
@@ -75,13 +78,49 @@ void setup(){
   Sensor4.init(); 
 
 
+/********************************************   
+*   Initial test of hardware and peripherals
+*********************************************/
 
-    Serial.begin(115200);
-    while ( !Serial ) delay(100);   // wait for native usb
+  //  *** Valves and motors check *** 
+  //Open the valves sequentially 
+Valve1.on(); 
+Valve2.on(); 
+Valve3.on(); 
+Valve4.on(); 
+
+//start both motors, fill up reservoir and lines 
+  Motor1.on();
+  delay(2000); //reservoir buffer needs to be bigger to prevent dry run on pump 2
+  Motor2.on();
+  delay(500); //TODO: Adjust, so that lines will be filled but little to no water makes it through the valves
+  //stop pumps
+  Motor1.off(); 
+  Motor2.off(); 
+  //close valves 
+Valve1.off(); 
+Valve2.off(); 
+Valve3.off(); 
+Valve4.off(); 
+
     
-    //Powering HSS (SD card + analog sensors)
-    pinMode(hss_sig, OUTPUT); 
-    digitalWrite(hss_sig, LOW); 
+   //  *** Sensors and SD card check *** 
+  //Powering the HSS 
+  HSS.on(); 
+
+//Serial.print("Sensor 1 reading: "); 
+int a = Sensor1.read(); 
+int b = Sensor2.read(); 
+int c = Sensor3.read(); 
+int d = Sensor4.read(); 
+Serial.print("Sensor readings 1 - 4: "); 
+Serial.print(a); 
+Serial.print(' ');
+Serial.print(b); 
+Serial.print(' ');
+Serial.print(c); 
+Serial.print(' ');
+Serial.println(d); 
 
     //Initialize SD card
     Serial.print("Initializing SD card...");
@@ -113,8 +152,7 @@ void setup(){
         Adafruit_BMP280::FILTER_X16,      /* Filtering. */
         Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
 
-    
-    }
+}
 
 /* Loop function */
 void loop(){

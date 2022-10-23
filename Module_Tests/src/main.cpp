@@ -149,15 +149,18 @@ void setup()
     Valve3.on();
     delay(150);
     Valve4.on();
+    delay(150);
 
     // start both motors, fill up reservoir and lines
     Motor1.on();
-    delay(500); // reservoir buffer needs to be bigger to prevent dry run on pump 2
+    delay(200); // reservoir buffer needs to be bigger to prevent dry run on pump 2
     Motor2.on();
-    delay(500); // TODO: Adjust, so that lines will be filled but little to no water makes it through the valves
+    delay(200); // TODO: Adjust, so that lines will be filled but little to no water makes it through the valves
     // stop pumps
     Motor1.off();
+    delay(150);
     Motor2.off();
+    delay(150); 
 
     // close valves
     Valve1.off();
@@ -185,7 +188,7 @@ void setup()
     Serial.print(' ');
     Serial.print(value2);
     Serial.print(' ');
-    Serial.print(value4);
+    Serial.print(value3);
     Serial.print(' ');
     Serial.println(value4);
 
@@ -242,7 +245,7 @@ void setup()
 void loop()
 {
 
-Serial.println(F("--- Set alarm and initialize SD card --- "));  
+Serial.println(F("Set alarm and initialize SD card..."));  
 
 //TODO RTC stuff 
 
@@ -253,7 +256,7 @@ Serial.println(F("--- Set alarm and initialize SD card --- "));
   //Initializing the SD after powering it down (error indication by status led, won't work on PCB V3.0)
   //SD_setup(ledpin); 
 
-Serial.println(F("--- Service cycle begin --- \n")); 
+Serial.println(F("Service cycle begin... \n")); 
 
   /****************************************
   *** Code for reading all sensor data ****
@@ -280,7 +283,7 @@ Serial.println(F("--- Service cycle begin --- \n"));
     Serial.println(' ');
     Serial.print(value2);
     Serial.println(' ');
-    Serial.print(value4);
+    Serial.print(value3);
     Serial.println(' ');
     Serial.println(value4);
     Serial.println(' ');
@@ -306,7 +309,7 @@ Serial.println(F("--- Service cycle begin --- \n"));
     // if the file opened okay, write to it:
     if (myFile)
     {
-        Serial.print(F("Writing to test.txt..."));
+        Serial.print(F("Writing to Data.txt..."));
         // Data log entry to be written: 
         //myFile.println("testing 1, 2, 3.");
         // Print timestamp of RTC 
@@ -346,7 +349,7 @@ Serial.println(F("--- Service cycle begin --- \n"));
     else
     {
         // if the file didn't open, print an error:
-        Serial.println(F("error opening test.txt"));
+        Serial.println(F("Error opening Data.txt"));
     }
 
     // re-open the file for reading:
@@ -391,7 +394,7 @@ Serial.println(F("--- Service cycle begin --- \n"));
     //disconnect only after transfering setup routine 
     //HSS.off();        // disconnecting power to sensors and SD card
 
-    Serial.println("--- Service cycle finished! ---\n");
+    Serial.println("Service cycle finished!\n");
 
     // End of loop function
 

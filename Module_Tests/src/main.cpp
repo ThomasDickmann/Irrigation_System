@@ -183,20 +183,7 @@ void setup()
     Serial.println(value4);
 
     // Initialize SD card
-    Serial.print(F("Initializing SD card..."));
-
-    if (!SD.begin(CS))
-    {
-        Serial.println(F("initialization failed!"));
-        while(true) //endless while loop with blinking indicator led showing the error 
-          {
-            digitalWrite(ledpin, HIGH);
-            delay(200);
-            digitalWrite(ledpin,LOW);
-            delay(200);
-          }
-    }
-    Serial.println(F("initialization done."));
+    SD_init(ledpin); 
 
     // Initialize BMP sensor
     unsigned status = bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID); // adressing BMP with correct bus adress

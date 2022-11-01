@@ -85,4 +85,30 @@ extern unsigned short value4;
 extern float temperature_current;
 extern float pressure_current;
 
+/*********************************************
+ *   Function prototypes for system setup and use 
+ * ********************************************/
+
+//RTC system control
+
+void wakeUp();
+
+void RTC_init();
+
+void RTC_set_alarm();
+
+void RTC_sleep_prepare();
+
+void RTC_setup(); 
+
+//SD functionality
+
+void SD_init(unsigned char ledpin); 
+
+//Service cycle functions
+
+int duration_for_ml(char amount_ml);
+
+
+
 #endif //SETUP_H

@@ -228,7 +228,7 @@ void setup()
 void loop()
 {
 
-Serial.println(F("Set alarm and initialize SD card..."));  
+Serial.println(F("Set alarm and initialize SD card:"));  
 
 //TODO RTC stuff 
 

@@ -131,7 +131,7 @@ void setup()
      *********************************************/
 
     //  *** Valves and motors check ***
-    Serial.println(F("Execute valve and motor performance check. \n")); 
+    Serial.println(F("Execute valve and motor performance check...")); 
     // Open the valves sequentially
     Valve1.on();
     delay(150);
@@ -209,7 +209,7 @@ void setup()
     RTC_alarm_init();
 
  //flashing the status LED to indicate to signal finish of setup function 
-  for (int i=0; i <4; i++){
+  for (int i=0; i < 5; i++){
     LED_Status.on();
     delay(150);
     LED_Status.off(); 
@@ -256,6 +256,7 @@ Serial.println(F("Service cycle begin... \n"));
     Serial.print(pressure_current);
     Serial.println(F(" hPa"));
 
+/*
     // Serial.print("Sensor 1 reading: ");
     value1 = Sensor1.read();
     value2 = Sensor2.read();
@@ -270,8 +271,9 @@ Serial.println(F("Service cycle begin... \n"));
     Serial.println(' ');
     Serial.println(value4);
     Serial.println(' ');
+*/
 
-
+ Serial.print(F("RTC timestamp hh mm ss d m y: ")); 
     // Print timestamp of RTC to serial monitor
     Serial.print(hour());
     Serial.print(' ');
@@ -322,6 +324,8 @@ Serial.println(F("Service cycle begin... \n"));
         Serial.println(i + 1);
       }
     }
+
+  Serial.println(F("Soil moisture level check and watering routine finished. \n")); 
 
     // Write sensor data and timestamp to SD card
     myFile = SD.open("Data.txt", FILE_WRITE);

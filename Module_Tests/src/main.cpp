@@ -228,16 +228,25 @@ void setup()
 void loop()
 {
 
-Serial.println(F("Set alarm and initialize SD card:"));  
+Serial.println(F("Set wakeup alarm and go to sleep:"));
 
-//TODO RTC stuff 
+// Set new alarm with defined time offset
+RTC_set_alarm(); // Writes the new alarm time to the serial monitor
+delay(100);
+// Hypothesis: Serial was doing weird shit because the final step in set_alarm is to write the time, while the first step in the next function was to get the time.
+// probably timestap changed while trying to write it to the serial when calling set_alarm right right after calling it before in setup, or after sleep prepare with get timestamp
 
-  //Code to be executed after arduino has been woken up:
-  LED_Status.on(); //turns on status led to indicate wakeup/begin of service cycle
-  HSS.on();        //connecting power to sensors and SD card 
+// Preparing the arduino for power saving sleep state ... TODO: Move sleep_cpu to RTC_sleep_prepare fct?
+RTC_sleep_prepare(); // writes the time of going to sleep to the serial monitor
+delay(100);
+sleep_cpu(); // activating sleep mode, waiting for alarm interrupt to trigger controller to wake up 
 
-  //Initializing the SD after powering it down (error indication by status led, won't work on PCB V3.0)
-  SD_init(ledpin); 
+// Code to be executed after arduino has been woken up:
+LED_Status.on(); // turns on status led to indicate wakeup/begin of service cycle
+HSS.on();        // connecting power to sensors and SD card
+
+// Initializing the SD after powering it down (error indication by status led, won't work on PCB V3.0)
+SD_init(ledpin); 
 
 Serial.println(F("Service cycle begin... \n")); 
 

@@ -47,7 +47,7 @@ unsigned char v_bat = A1;
 //*** Firmware constants/variables (not included in Setup.h) ***
 
 //Time interval for system wake-up cycles 
-int wakeup_interval = 3; //TODO: Check, if int necessary
+int wakeup_interval = 5; //TODO: Check, if int necessary
 
 //Variables of the system 
 time_t t; //Time variable to be used in RTC functions 
@@ -75,7 +75,7 @@ float pressure_current;
 //Wakes up the arduino from sleep state and detatches the interrupt
 void wakeUp()
 {
-  Serial.println(F("Interrupt has been triggered, executing wakeup function"));   //Print message to serial monitor
+  Serial.println(F("Alarm interrupt has been triggered, controller is waking up..."));   //Print message to serial monitor
   sleep_disable();                                         //Disable sleep mode
   detachInterrupt(digitalPinToInterrupt(interruptPin));    //Removes the interrupt from pin 2;
 }
@@ -113,7 +113,7 @@ void RTC_set_alarm()
   RTC.squareWave(SQWAVE_NONE);
     // enable interrupt output for Alarm 1
   RTC.alarmInterrupt(ALARM_1, true);
-  Serial.println(F("Alarm has been set for: ")); 
+  Serial.println(F("Alarm has been set for: TODO ")); 
   //TODO: Add print of alarm flag time 
 }
 
@@ -124,7 +124,7 @@ void RTC_sleep_prepare()
   attachInterrupt(digitalPinToInterrupt(interruptPin), wakeUp, LOW);    //attaching the interrupt, function "wakeUp" is executed when triggered---> here: Function/ISR definition!
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);                                  //setting the deepest sleep mode                                                          //creates temporary variable with information on time
   t=RTC.get();                                                          //gets current time from RTC
-  Serial.println(F("Will go to sleep at: ")); 
+  Serial.println(F("Going to sleep... (TODO: Sleep time)")); 
  // TODO: print sleep time on serial monitor
   }
 

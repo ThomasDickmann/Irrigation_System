@@ -81,6 +81,8 @@ extern unsigned short value2;
 extern unsigned short value3; 
 extern unsigned short value4; 
 
+extern unsigned short soil_threshold;
+
 // Creation of sensor reading variables BMP
 extern float temperature_current;
 extern float pressure_current;

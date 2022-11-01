@@ -58,6 +58,8 @@ unsigned short value2;
 unsigned short value3; 
 unsigned short value4; 
 
+unsigned short soil_threshold = 1000; 
+
 // Creation of sensor reading variables BMP
 float temperature_current;
 float pressure_current;

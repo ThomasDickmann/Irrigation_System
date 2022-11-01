@@ -131,6 +131,7 @@ void setup()
      *********************************************/
 
     //  *** Valves and motors check ***
+    Serial.println(F("Execute valve and motor performance check. \n")); 
     // Open the valves sequentially
     Valve1.on();
     delay(150);
@@ -215,7 +216,7 @@ void setup()
     delay(150);
   }
 
-    // Powering off the HSS
+    // Cutting HSS power to SD card and sensors 
     HSS.off();
 
     Serial.println(F("System check and setup cycle finished. \n")); 
@@ -294,9 +295,33 @@ Serial.println(F("Service cycle begin... \n"));
     delay(2000); // TODO pass fuction to give 15ml of water
     Motor1.off();
 
-    // TODO: Comparision of sensor values and irrigation activity
-    
+    // Comparision of sensor values and irrigation activity
+    // Loop over sensors and compare values to threshold (needs to be defined in setup.cpp)
+    Serial.println(F("Reading soil sensors, checking for water demand: "));
+    for (int i = 0; i < 4; i++)
+    {
+      Serial.print(F("Sensor "));
+      Serial.print(i + 1);
+      Serial.print(F(": "));
+      Serial.println(MySensors[i].read());
 
+      if (MySensors[i].read() < soil_threshold)
+      {
+        Serial.print(F("Watering need detected. Watering plant "));
+        Serial.println(i + 1);
+        MyValves[i].on();  // open valve i
+        Motor2.on();       // switch on pump secondary reservoir
+        delay(1000);       // TODO pass function to give 5ml of water, optimize with plant specific value through var. list of amount constants
+        Motor2.off();      // turn off pump secondary reservoir
+        MyValves[i].off(); // close valve i
+      }
+
+      else
+      {
+        Serial.print(F("No watering need detected for plant "));
+        Serial.println(i + 1);
+      }
+    }
 
     // Write sensor data and timestamp to SD card
     myFile = SD.open("Data.txt", FILE_WRITE);

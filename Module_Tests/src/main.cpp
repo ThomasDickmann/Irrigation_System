@@ -215,6 +215,9 @@ void setup()
     delay(150);
   }
 
+    // Powering off the HSS
+    HSS.off();
+
     Serial.println(F("System check and setup cycle finished. \n")); 
   //End of setup function 
 
@@ -233,7 +236,7 @@ Serial.println(F("Set alarm and initialize SD card..."));
   HSS.on();        //connecting power to sensors and SD card 
 
   //Initializing the SD after powering it down (error indication by status led, won't work on PCB V3.0)
-  //SD_setup(ledpin); 
+  SD_init(ledpin); 
 
 Serial.println(F("Service cycle begin... \n")); 
 
@@ -372,10 +375,10 @@ Serial.println(F("Service cycle begin... \n"));
 
     LED_Status.off(); // turns off status led to indicate finished service cycle
     
-    //disconnect only after transfering setup routine 
-    //HSS.off();        // disconnecting power to sensors and SD card
+    // Cutting power to sensors and SD card
+    HSS.off();        
 
-    Serial.println("Service cycle finished!\n");
+    Serial.println(F("Service cycle finished!\n"));
 
     // End of loop function
 

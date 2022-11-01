@@ -75,6 +75,14 @@ extern unsigned char v_bat;
 //Time variable for RTC
 extern time_t t; 
 
+// Creation of sensor reading variables soil sensors 
+extern unsigned short value1; 
+extern unsigned short value2; 
+extern unsigned short value3; 
+extern unsigned short value4; 
 
+// Creation of sensor reading variables BMP
+extern float temperature_current;
+extern float pressure_current;
 
 #endif //SETUP_H

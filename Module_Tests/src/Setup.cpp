@@ -51,3 +51,13 @@ int wakeup_interval = 3; //TODO: Check, if int necessary
 
 //Variables of the system 
 time_t t; //Time variable to be used in RTC functions 
+
+// Creation of sensor reading variables soil sensors 
+unsigned short value1; 
+unsigned short value2; 
+unsigned short value3; 
+unsigned short value4; 
+
+// Creation of sensor reading variables BMP
+float temperature_current;
+float pressure_current;

@@ -72,8 +72,8 @@ AnalogInput Sensor3(sen_3);
 AnalogInput Sensor4(sen_4);
 
 //Later: Creating a list of objects to loop over in the service cylce 
-//AnalogInput MySensors[] = {Sensor1, Sensor2, Sensor3, Sensor4};
-//LowSideSwitch MyValves[] = {Valve1, Valve2, Valve3, Valve4};
+AnalogInput MySensors[] = {Sensor1, Sensor2, Sensor3, Sensor4};
+LowSideSwitch MyValves[] = {Valve1, Valve2, Valve3, Valve4};
 
 // Creation of BMP sensor object
 Adafruit_BMP280 bmp; 
@@ -85,16 +85,6 @@ DS3232RTC myRTC;
 
 // Creation of a file object for the SD card
 File myFile;    
-
-// Creation of sensor reading variables soil sensors 
-unsigned short value1; 
-unsigned short value2; 
-unsigned short value3; 
-unsigned short value4; 
-
-// Creation of sensor reading variables BMP
-float temperature_current;
-float pressure_current;
 
 /* *** Move to Setup later on *** */
 // Print Digits function used by RTC timestamp in loop
@@ -303,6 +293,19 @@ Serial.println(F("Service cycle begin... \n"));
     Serial.print(year());
     Serial.println();
 
+    /****************************************
+     ** Code for watering service routine ****
+     *****************************************/
+
+    // Fill secondary reservoir with water
+    Motor1.on();
+    delay(2000); // TODO pass fuction to give 15ml of water
+    Motor1.off();
+
+    // TODO: Comparision of sensor values and irrigation activity
+    
+
+
     // Write sensor data and timestamp to SD card
     myFile = SD.open("Data.txt", FILE_WRITE);
 
@@ -369,17 +372,6 @@ Serial.println(F("Service cycle begin... \n"));
         // if the file didn't open, print an error:
         Serial.println(F("Error opening Data.txt"));
     }
-
-    /****************************************
-     ** Code for watering service routine ****
-     *****************************************/
-
-    // Fill secondary reservoir with water
-    Motor1.on();
-    delay(2000); // TODO pass fuction to give 15ml of water
-    Motor1.off();
-
-    // TODO: Comparision of sensor values and irrigation activity
 
     // Redundant security measure: Close all valves and swtich off both pumps again
     Motor1.off();

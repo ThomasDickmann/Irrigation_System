@@ -81,17 +81,19 @@ void wakeUp()
 
 //Function to initialize the RTC, clear the alarm etc (unmodified copy from tutorial)
 // initialize the alarms to known values, clear the alarm flags, clear the alarm interrupt flags
- void RTC_init()
- {
-  RTC.setAlarm(ALM1_MATCH_DATE, 0, 0, 0, 1);
-  RTC.setAlarm(ALM2_MATCH_DATE, 0, 0, 0, 1);
-  RTC.alarm(ALARM_1);
-  RTC.alarm(ALARM_2);
-  RTC.alarmInterrupt(ALARM_1, false);
-  RTC.alarmInterrupt(ALARM_2, false);
-  RTC.squareWave(SQWAVE_NONE);
-  Serial.println(F("RTC initialization complete"));
- }
+void RTC_alarm_init()
+{
+    pinMode(interruptPin, INPUT_PULLUP);
+    //unmodified from tutorial: 
+    RTC.setAlarm(ALM1_MATCH_DATE, 0, 0, 0, 1);
+    RTC.setAlarm(ALM2_MATCH_DATE, 0, 0, 0, 1);
+    RTC.alarm(ALARM_1);
+    RTC.alarm(ALARM_2);
+    RTC.alarmInterrupt(ALARM_1, false);
+    RTC.alarmInterrupt(ALARM_2, false);
+    RTC.squareWave(SQWAVE_NONE);
+    Serial.println(F("RTC initialization complete"));
+}
 
 //Set an Alarm 
 void RTC_set_alarm()
@@ -123,13 +125,6 @@ void RTC_sleep_prepare()
   Serial.println(F("Will go to sleep at: ")); 
  // TODO: print sleep time on serial monitor
   }
-
-
-void RTC_setup() //single function to set up the RTC in the setup fct of main.cpp
-  {
-    pinMode(interruptPin, INPUT_PULLUP);  
-    RTC_init();
-   }
 
 
 //SD data logging functionality

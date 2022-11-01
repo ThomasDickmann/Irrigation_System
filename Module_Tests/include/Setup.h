@@ -93,13 +93,11 @@ extern float pressure_current;
 
 void wakeUp();
 
-void RTC_init();
+void RTC_alarm_init();
 
 void RTC_set_alarm();
 
 void RTC_sleep_prepare();
-
-void RTC_setup(); 
 
 //SD functionality
 

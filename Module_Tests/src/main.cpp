@@ -127,7 +127,7 @@ void setup()
     Sensor4.init();
 
     /********************************************
-     *   Initial test of hardware and peripherals
+     *  Initial test of hardware and peripherals
      *********************************************/
 
     //  *** Valves and motors check ***
@@ -162,7 +162,7 @@ void setup()
     Valve4.off();
     delay(150);
 
-     Serial.println(F("Valve and motor check finished. \n")); 
+    Serial.println(F("Valve and motor check finished. \n")); 
 
     //  *** Sensors and SD card check ***
     // Powering the HSS
@@ -204,6 +204,8 @@ void setup()
     else
         Serial.println(F("RTC has set the system time"));
 
+    // Prepare RTC for alarm interrupt signals
+    RTC_alarm_init();
 
  //flashing the status LED to indicate to signal finish of setup function 
   for (int i=0; i <4; i++){
